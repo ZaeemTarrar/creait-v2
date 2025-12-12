@@ -9,6 +9,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
+    "save": "git add . ; git commit -m \"Pre-Deploy\" ; git push",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist"
   },
