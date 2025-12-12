@@ -1,3 +1,3 @@
 <div align="center" >
-<h1>Cre<span style="color:red;" >AI</span>t</h1>
+<img style="height:100px;" src=".github/assets/images/logo.png" >
 </div>
