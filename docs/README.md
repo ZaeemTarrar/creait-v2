@@ -37,6 +37,7 @@ flowchart TD
 
     A --> B
     B --" Dashboard "--> G
+    subgraph Dash
     G --> C
     C --> H
     H --> D
@@ -45,6 +46,7 @@ flowchart TD
     E --> J
     J --> F
     F --> K
+    end
     K --> L
     L --> M
     M --> N

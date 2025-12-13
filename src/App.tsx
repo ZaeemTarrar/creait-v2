@@ -1,11 +1,10 @@
 import "./App.css";
+import MainNav from "./routes/main/MainNav";
 
 function App() {
   return (
     <>
-      <div className="container">
-        <h1 className="display-1 text-center">Hello World !</h1>
-      </div>
+      <MainNav />
     </>
   );
 }
