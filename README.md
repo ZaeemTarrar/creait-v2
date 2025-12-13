@@ -15,6 +15,7 @@ git push
 sudo npm run deploy
 ```
 
-## Live Web App
+## Accessing the Web Application
 
-**Link:** [Go to Creait](https://ZaeemTarrar.github.io/creait-v2/)
+**Local Link:** [App](https://ZaeemTarrar.github.io/creait-v2/)
+**Live Link:** [App](http://localhost:5173/creait-v2/)
