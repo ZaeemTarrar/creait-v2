@@ -1,8 +1,13 @@
+import { NavLink } from "react-router-dom";
+
 const Home = () => {
   return (
     <>
-      <div className="container mt-1">
-        <h1 className="display-1">Home Page !</h1>
+      <div className="container mt-5">
+        <h1 className="display-1 text-center">Home Page !</h1>
+        <NavLink to="/test" className="btn btn-primary">
+          Test Page
+        </NavLink>
       </div>
     </>
   );
