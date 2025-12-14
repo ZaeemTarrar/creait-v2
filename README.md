@@ -23,6 +23,6 @@ sudo npm run deploy
 
 ### Accessing the Web Application
 
-**Local Link:** [App](https://ZaeemTarrar.github.io/creait-v2/)
+**Local Link:** [App](http://localhost:5173/creait-v2/)
 
-**Live Link:** [App](http://localhost:5173/creait-v2/)
+**Live Link:** [App](https://ZaeemTarrar.github.io/creait-v2/)

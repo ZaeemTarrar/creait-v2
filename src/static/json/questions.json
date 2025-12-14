@@ -1,0 +1,895 @@
+{
+  "phases": [
+    {
+      "id": 1,
+      "name": "Startup Basics",
+      "primary_questions": [
+        {
+          "id": 1,
+          "question": "What type of startup are you working on?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "Web app",
+              "followup_questions": [1, 2, 17, 18],
+              "exclude_followups": [33]
+            },
+            {
+              "value": "Mobile app",
+              "followup_questions": [1, 2, 17, 18, 33],
+              "exclude_followups": [32]
+            },
+            {
+              "value": "Service-based",
+              "followup_questions": [1, 2, 19, 39],
+              "exclude_followups": [17, 18, 32, 33]
+            },
+            {
+              "value": "Hardware",
+              "followup_questions": [1, 2, 18, 33],
+              "exclude_followups": [17]
+            },
+            {
+              "value": "Other",
+              "followup_questions": [1, 2],
+              "exclude_followups": [17, 18, 32, 33]
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "question": "What is your target market?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "Local",
+              "followup_questions": [3, 4, 35],
+              "exclude_followups": [36]
+            },
+            {
+              "value": "Regional",
+              "followup_questions": [3, 4, 35, 36],
+              "exclude_followups": []
+            },
+            {
+              "value": "Global",
+              "followup_questions": [3, 4, 35, 36],
+              "exclude_followups": []
+            },
+            {
+              "value": "Niche segment",
+              "followup_questions": [3, 4, 5],
+              "exclude_followups": [36]
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "question": "What makes your startup unique (USP)?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "Technology-led USP",
+              "followup_questions": [5, 6, 27],
+              "exclude_followups": []
+            },
+            {
+              "value": "Pricing-led USP",
+              "followup_questions": [5, 6, 28],
+              "exclude_followups": []
+            },
+            {
+              "value": "Experience-led USP",
+              "followup_questions": [5, 6, 38],
+              "exclude_followups": []
+            },
+            {
+              "value": "Unclear USP",
+              "followup_questions": [5, 6],
+              "exclude_followups": []
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "question": "What is your estimated available capital?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "<$5k",
+              "followup_questions": [8, 15, 31],
+              "exclude_followups": [37, 38]
+            },
+            {
+              "value": "$5k–$20k",
+              "followup_questions": [8, 15, 16],
+              "exclude_followups": []
+            },
+            {
+              "value": "$20k–$100k",
+              "followup_questions": [7, 8, 14],
+              "exclude_followups": []
+            },
+            {
+              "value": "$100k+",
+              "followup_questions": [7, 8, 37, 38],
+              "exclude_followups": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Team & Model",
+      "primary_questions": [
+        {
+          "id": 5,
+          "question": "Do you have a team?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "Solo founder",
+              "followup_questions": [9, 10, 12],
+              "exclude_followups": []
+            },
+            {
+              "value": "2–3 co-founders",
+              "followup_questions": [9, 10],
+              "exclude_followups": []
+            },
+            {
+              "value": "Small team",
+              "followup_questions": [9, 10, 25],
+              "exclude_followups": []
+            },
+            {
+              "value": "Hiring now",
+              "followup_questions": [9, 10, 29],
+              "exclude_followups": []
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "question": "What are your personal strengths or skills?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "Tech",
+              "followup_questions": [11, 27],
+              "exclude_followups": []
+            },
+            {
+              "value": "Marketing",
+              "followup_questions": [12, 35],
+              "exclude_followups": []
+            },
+            {
+              "value": "Finance",
+              "followup_questions": [28, 38],
+              "exclude_followups": []
+            },
+            {
+              "value": "Product",
+              "followup_questions": [21, 29],
+              "exclude_followups": []
+            },
+            {
+              "value": "Sales",
+              "followup_questions": [35, 36],
+              "exclude_followups": []
+            },
+            {
+              "value": "Other",
+              "followup_questions": [12],
+              "exclude_followups": []
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "question": "Do you have a defined revenue model?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "Yes",
+              "followup_questions": [14, 15],
+              "exclude_followups": []
+            },
+            {
+              "value": "No",
+              "followup_questions": [14, 22],
+              "exclude_followups": [15]
+            },
+            {
+              "value": "Working on it",
+              "followup_questions": [14, 22, 24],
+              "exclude_followups": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Launch & Resources",
+      "primary_questions": [
+        {
+          "id": 8,
+          "question": "What is your preferred time to launch?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "1–3 months",
+              "followup_questions": [16, 17, 31],
+              "exclude_followups": []
+            },
+            {
+              "value": "3–6 months",
+              "followup_questions": [16, 17],
+              "exclude_followups": []
+            },
+            {
+              "value": "6–12 months",
+              "followup_questions": [16, 29],
+              "exclude_followups": []
+            },
+            {
+              "value": ">1 year",
+              "followup_questions": [16, 29],
+              "exclude_followups": []
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "question": "Do you want a mobile app, web portal or both?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "Web only",
+              "followup_questions": [17, 32],
+              "exclude_followups": [33]
+            },
+            {
+              "value": "Mobile app only",
+              "followup_questions": [17, 18, 33],
+              "exclude_followups": [32]
+            },
+            {
+              "value": "Both",
+              "followup_questions": [17, 18, 32, 33],
+              "exclude_followups": []
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "question": "What kind of support do you expect from us?",
+          "type": "checkbox",
+          "options": [
+            {
+              "value": "Planning",
+              "followup_questions": [19],
+              "exclude_followups": []
+            },
+            {
+              "value": "Development",
+              "followup_questions": [20, 25],
+              "exclude_followups": []
+            },
+            {
+              "value": "Branding",
+              "followup_questions": [37, 38],
+              "exclude_followups": []
+            },
+            {
+              "value": "Marketing",
+              "followup_questions": [35, 36],
+              "exclude_followups": []
+            },
+            {
+              "value": "Legal",
+              "followup_questions": [38],
+              "exclude_followups": []
+            },
+            {
+              "value": "Operations",
+              "followup_questions": [39],
+              "exclude_followups": []
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "question": "What stage is your startup currently at?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "Idea only",
+              "followup_questions": [21, 22],
+              "exclude_followups": []
+            },
+            {
+              "value": "Validated idea",
+              "followup_questions": [23, 22],
+              "exclude_followups": []
+            },
+            {
+              "value": "MVP in development",
+              "followup_questions": [21, 29],
+              "exclude_followups": []
+            },
+            {
+              "value": "MVP ready",
+              "followup_questions": [23, 35],
+              "exclude_followups": []
+            },
+            {
+              "value": "Launched",
+              "followup_questions": [23, 36, 37],
+              "exclude_followups": []
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "question": "What business model are you considering?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "SaaS / Subscription",
+              "followup_questions": [22, 24, 28],
+              "exclude_followups": []
+            },
+            {
+              "value": "Marketplace",
+              "followup_questions": [22, 24],
+              "exclude_followups": []
+            },
+            {
+              "value": "Transaction-based",
+              "followup_questions": [22, 30],
+              "exclude_followups": []
+            },
+            {
+              "value": "Freemium",
+              "followup_questions": [22, 30],
+              "exclude_followups": []
+            },
+            {
+              "value": "Ad-supported",
+              "followup_questions": [24],
+              "exclude_followups": []
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "question": "Do you already have any tech resources?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "None",
+              "followup_questions": [25, 12],
+              "exclude_followups": []
+            },
+            {
+              "value": "Freelance developers",
+              "followup_questions": [25],
+              "exclude_followups": []
+            },
+            {
+              "value": "In-house team",
+              "followup_questions": [25, 27],
+              "exclude_followups": []
+            },
+            {
+              "value": "Outsourced partner",
+              "followup_questions": [25],
+              "exclude_followups": []
+            },
+            {
+              "value": "I'm a developer",
+              "followup_questions": [27],
+              "exclude_followups": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Growth & Support",
+      "primary_questions": [
+        {
+          "id": 14,
+          "question": "What is your intended revenue model?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "One-time sale",
+              "followup_questions": [30],
+              "exclude_followups": []
+            },
+            {
+              "value": "Subscription",
+              "followup_questions": [28, 30],
+              "exclude_followups": []
+            },
+            {
+              "value": "Usage-based",
+              "followup_questions": [28],
+              "exclude_followups": []
+            },
+            {
+              "value": "Freemium",
+              "followup_questions": [30],
+              "exclude_followups": []
+            },
+            {
+              "value": "Not sure",
+              "followup_questions": [22],
+              "exclude_followups": []
+            }
+          ]
+        },
+        {
+          "id": 15,
+          "question": "What is your planned launch timeline?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "1–3 months",
+              "followup_questions": [29, 31],
+              "exclude_followups": []
+            },
+            {
+              "value": "3–6 months",
+              "followup_questions": [29],
+              "exclude_followups": []
+            },
+            {
+              "value": "6–12 months",
+              "followup_questions": [29],
+              "exclude_followups": []
+            },
+            {
+              "value": ">1 year",
+              "followup_questions": [29],
+              "exclude_followups": []
+            },
+            {
+              "value": "No timeline",
+              "followup_questions": [29, 31],
+              "exclude_followups": []
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "question": "Which platforms do you want to launch on?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "Web",
+              "followup_questions": [32],
+              "exclude_followups": [33]
+            },
+            {
+              "value": "Android",
+              "followup_questions": [33],
+              "exclude_followups": [32]
+            },
+            {
+              "value": "iOS",
+              "followup_questions": [33],
+              "exclude_followups": [32]
+            },
+            {
+              "value": "Both",
+              "followup_questions": [32, 33],
+              "exclude_followups": []
+            },
+            {
+              "value": "Other",
+              "followup_questions": [33],
+              "exclude_followups": []
+            }
+          ]
+        },
+        {
+          "id": 17,
+          "question": "Do you need help with branding & visual identity?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "Yes (full)",
+              "followup_questions": [37, 38],
+              "exclude_followups": []
+            },
+            {
+              "value": "Basic only",
+              "followup_questions": [37],
+              "exclude_followups": []
+            },
+            {
+              "value": "Already have branding",
+              "followup_questions": [38],
+              "exclude_followups": []
+            }
+          ]
+        },
+        {
+          "id": 18,
+          "question": "How do you plan to acquire users?",
+          "type": "checkbox",
+          "options": [
+            {
+              "value": "Organic social",
+              "followup_questions": [35],
+              "exclude_followups": []
+            },
+            {
+              "value": "Paid ads",
+              "followup_questions": [36],
+              "exclude_followups": []
+            },
+            {
+              "value": "SEO",
+              "followup_questions": [35],
+              "exclude_followups": []
+            },
+            {
+              "value": "Influencers",
+              "followup_questions": [36],
+              "exclude_followups": []
+            },
+            {
+              "value": "Referrals",
+              "followup_questions": [35],
+              "exclude_followups": []
+            },
+            {
+              "value": "Not decided",
+              "followup_questions": [35, 36],
+              "exclude_followups": []
+            }
+          ]
+        },
+        {
+          "id": 19,
+          "question": "Are you open to getting investor funding?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "Yes",
+              "followup_questions": [37, 38],
+              "exclude_followups": []
+            },
+            {
+              "value": "Maybe later",
+              "followup_questions": [38],
+              "exclude_followups": []
+            },
+            {
+              "value": "No",
+              "followup_questions": [],
+              "exclude_followups": [37, 38]
+            },
+            {
+              "value": "Not sure",
+              "followup_questions": [38],
+              "exclude_followups": []
+            }
+          ]
+        },
+        {
+          "id": 20,
+          "question": "Do you want CreAIt to help manage operations too?",
+          "type": "radio",
+          "options": [
+            {
+              "value": "Yes (full)",
+              "followup_questions": [39, 40],
+              "exclude_followups": []
+            },
+            {
+              "value": "Partial",
+              "followup_questions": [39],
+              "exclude_followups": []
+            },
+            {
+              "value": "No",
+              "followup_questions": [],
+              "exclude_followups": [39, 40]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "followup_questions": [
+    {
+      "id": 1,
+      "section": "Startup Basics",
+      "question": "Is your startup focused more on solving a problem or creating a new opportunity?",
+      "type": "radio",
+      "options": ["Solving a clear problem", "Creating a new opportunity", "Combination of both"]
+    },
+    {
+      "id": 2,
+      "section": "Startup Basics",
+      "question": "Does your startup fall under B2B, B2C, or B2B2C?",
+      "type": "radio",
+      "options": ["B2B", "B2C", "B2B2C"]
+    },
+    {
+      "id": 3,
+      "section": "Startup Basics",
+      "question": "Have you validated the need for your product in this market?",
+      "type": "radio",
+      "options": ["Yes (users spoken to)", "Partially", "Not yet"]
+    },
+    {
+      "id": 4,
+      "section": "Startup Basics",
+      "question": "Is your target audience defined by geography, industry, or user behavior?",
+      "type": "dropdown",
+      "options": ["Geography-based", "Industry-based", "Behavior-based"]
+    },
+    {
+      "id": 5,
+      "section": "Startup Basics",
+      "question": "Is your USP based on technology, pricing, access, or experience?",
+      "type": "radio",
+      "options": ["Technology", "Pricing", "Access/Distribution", "User experience"]
+    },
+    {
+      "id": 6,
+      "section": "Startup Basics",
+      "question": "Do competitors currently offer something similar?",
+      "type": "radio",
+      "options": ["Yes (many)", "Yes (few)", "No"]
+    },
+    {
+      "id": 7,
+      "section": "Startup Basics",
+      "question": "Are you planning to raise external capital in the next 6–12 months?",
+      "type": "radio",
+      "options": ["Yes", "Maybe", "No"]
+    },
+    {
+      "id": 8,
+      "section": "Startup Basics",
+      "question": "What portion of your available capital are you comfortable investing initially?",
+      "type": "dropdown",
+      "options": ["<25%", "25–50%", ">50%"]
+    },
+    {
+      "id": 9,
+      "section": "Team & Model",
+      "question": "How many co-founders or core team members are currently active?",
+      "type": "dropdown",
+      "options": ["Just me", "2–3 people", "4+ people"]
+    },
+    {
+      "id": 10,
+      "section": "Team & Model",
+      "question": "Which key skill sets are currently missing from your team?",
+      "type": "checkbox",
+      "options": ["Tech", "Marketing", "Finance", "Product", "Operations"]
+    },
+    {
+      "id": 11,
+      "section": "Team & Model",
+      "question": "Are you planning to handle tech/product development yourself?",
+      "type": "radio",
+      "options": ["Yes", "Partially", "No"]
+    },
+    {
+      "id": 12,
+      "section": "Team & Model",
+      "question": "Would you be interested in founder coaching or mentorship to fill gaps?",
+      "type": "radio",
+      "options": ["Yes", "Maybe later", "No"]
+    },
+    {
+      "id": 13,
+      "section": "Team & Model",
+      "question": "Have you tested this model in any market or with potential users?",
+      "type": "radio",
+      "options": ["Yes", "Limited testing", "Not yet"]
+    },
+    {
+      "id": 14,
+      "section": "Team & Model",
+      "question": "Do you expect to generate revenue in the first 6 months of launch?",
+      "type": "radio",
+      "options": ["Yes", "Possibly", "Unlikely"]
+    },
+    {
+      "id": 15,
+      "section": "Team & Model",
+      "question": "Is your timeline flexible if market or development delays arise?",
+      "type": "radio",
+      "options": ["Yes", "Somewhat", "No"]
+    },
+    {
+      "id": 16,
+      "section": "Launch & Resources",
+      "question": "Do you plan a full launch or a beta/MVP release first?",
+      "type": "radio",
+      "options": ["Beta/MVP first", "Full launch", "Not decided"]
+    },
+    {
+      "id": 17,
+      "section": "Launch & Resources",
+      "question": "Which platform do you expect most user traffic from?",
+      "type": "radio",
+      "options": ["Web", "Mobile", "Both equally"]
+    },
+    {
+      "id": 18,
+      "section": "Launch & Resources",
+      "question": "Do you require native apps or hybrid solutions?",
+      "type": "radio",
+      "options": ["Native apps", "Hybrid apps", "Not sure"]
+    },
+    {
+      "id": 19,
+      "section": "Launch & Resources",
+      "question": "Do you want support in defining your GTM strategy?",
+      "type": "radio",
+      "options": ["Yes", "Maybe", "No"]
+    },
+    {
+      "id": 20,
+      "section": "Launch & Resources",
+      "question": "Are you expecting support beyond MVP stage (growth & scaling)?",
+      "type": "radio",
+      "options": ["Yes", "Only MVP", "Not sure"]
+    },
+    {
+      "id": 21,
+      "section": "Launch & Resources",
+      "question": "Have you created wireframes, MVP, or early product versions?",
+      "type": "radio",
+      "options": ["Yes", "In progress", "No"]
+    },
+    {
+      "id": 22,
+      "section": "Launch & Resources",
+      "question": "Are you exploring subscription, one-time, commission, or freemium?",
+      "type": "radio",
+      "options": ["Subscription", "One-time", "Commission", "Freemium"]
+    },
+    {
+      "id": 23,
+      "section": "Launch & Resources",
+      "question": "Do you have any customer feedback or traction at this stage?",
+      "type": "radio",
+      "options": ["Yes", "Early signals", "None"]
+    },
+    {
+      "id": 24,
+      "section": "Launch & Resources",
+      "question": "Does your model depend more on volume or recurring revenue?",
+      "type": "radio",
+      "options": ["Volume-based", "Recurring revenue", "Both"]
+    },
+    {
+      "id": 25,
+      "section": "Launch & Resources",
+      "question": "Is your current tech team in-house or outsourced?",
+      "type": "radio",
+      "options": ["In-house", "Outsourced", "Mixed"]
+    },
+    {
+      "id": 26,
+      "section": "Launch & Resources",
+      "question": "Do you have a preferred tech stack?",
+      "type": "dropdown",
+      "options": ["React", "Python", "Firebase", "No preference"]
+    },
+    {
+      "id": 27,
+      "section": "Launch & Resources",
+      "question": "Do you have pricing tiers or packages in mind?",
+      "type": "radio",
+      "options": ["Yes", "Rough idea", "No"]
+    },
+    {
+      "id": 28,
+      "section": "Growth & Support",
+      "question": "Do you plan to monetize from day one or later?",
+      "type": "radio",
+      "options": ["Day one", "After MVP", "Later"]
+    },
+    {
+      "id": 29,
+      "section": "Growth & Support",
+      "question": "Have you created a product roadmap or milestone schedule?",
+      "type": "radio",
+      "options": ["Yes", "Draft version", "No"]
+    },
+    {
+      "id": 30,
+      "section": "Growth & Support",
+      "question": "Do you anticipate major dependencies or blockers?",
+      "type": "radio",
+      "options": ["Yes", "Maybe", "No"]
+    },
+    {
+      "id": 31,
+      "section": "Growth & Support",
+      "question": "Do you foresee different versions for desktop & mobile users?",
+      "type": "radio",
+      "options": ["Yes", "No", "Not sure"]
+    },
+    {
+      "id": 32,
+      "section": "Growth & Support",
+      "question": "Are platform-specific features required (GPS, camera, etc.)?",
+      "type": "checkbox",
+      "options": ["GPS", "Camera", "Notifications", "Payments"]
+    },
+    {
+      "id": 33,
+      "section": "Growth & Support",
+      "question": "Do you already have a name, logo, or color palette?",
+      "type": "radio",
+      "options": ["Yes", "Partially", "No"]
+    },
+    {
+      "id": 34,
+      "section": "Growth & Support",
+      "question": "Do you plan to target premium, mid-tier, or mass market?",
+      "type": "radio",
+      "options": ["Premium", "Mid-tier", "Mass"]
+    },
+    {
+      "id": 35,
+      "section": "Growth & Support",
+      "question": "Have you defined customer personas & channels?",
+      "type": "radio",
+      "options": ["Yes", "Partially", "No"]
+    },
+    {
+      "id": 36,
+      "section": "Growth & Support",
+      "question": "Are you considering paid ads, partnerships, or organic growth?",
+      "type": "checkbox",
+      "options": ["Paid ads", "Partnerships", "Organic"]
+    },
+    {
+      "id": 37,
+      "section": "Growth & Support",
+      "question": "Do you want help preparing investor outreach & pitch decks?",
+      "type": "radio",
+      "options": ["Yes", "Maybe later", "No"]
+    },
+    {
+      "id": 38,
+      "section": "Growth & Support",
+      "question": "What funding structure are you open to?",
+      "type": "radio",
+      "options": ["Equity", "SAFE", "Convertible note"]
+    },
+    {
+      "id": 39,
+      "section": "Growth & Support",
+      "question": "Would you need help with customer service, logistics, or admin?",
+      "type": "checkbox",
+      "options": ["Customer support", "Logistics", "Admin"]
+    },
+    {
+      "id": 40,
+      "section": "Growth & Support",
+      "question": "Are you open to a co-founder-as-a-service model?",
+      "type": "radio",
+      "options": ["Yes", "Maybe", "No"]
+    }
+  ]
+}
