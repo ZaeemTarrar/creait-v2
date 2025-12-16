@@ -11,7 +11,7 @@ export interface PrimaryQuestion {
   options: QuestionOption[];
 }
 
-export type QuestionType = "radio" | "checkbox" | "dropdown";
+export type QuestionType = "radio" | "checkbox" | "dropdown" | "textarea" | "text";
 
 export interface QuestionOption {
   value: string | number;

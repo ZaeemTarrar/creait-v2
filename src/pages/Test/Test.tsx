@@ -1,113 +1,162 @@
-import { useState, useEffect } from "react";
+import { useState, useCallback, useMemo } from "react";
+import {
+  Container,
+  Card,
+  CardContent,
+  CardHeader,
+  Typography,
+  Button,
+  Box,
+  LinearProgress,
+  Chip,
+  Alert,
+  Paper,
+  Stack,
+  CircularProgress,
+} from "@mui/material";
 import FormInput from "../../components/FormInput/FormInput";
-import type { Phase, PrimaryQuestion } from "../../store/features/questions/types";
+import type { Phase, PrimaryQuestion, QuestionOption } from "../../store/features/questions/types";
 import { useAppSelector } from "../../store/hooks";
-import type { Option, ValidationRule } from "../../components/FormInput/FormInput";
+import type { Option, ValidationRule, InputType } from "../../components/FormInput/FormInput.types";
 
 const Test = () => {
   const survey = useAppSelector((state) => state.questions.survey);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [userAnswers, setUserAnswers] = useState<Record<number, string | string[]>>({});
   const [validationStatus, setValidationStatus] = useState<Record<number, boolean>>({});
-  const [showQuestions, setShowQuestions] = useState<boolean>(false);
+  const [touchedQuestions, setTouchedQuestions] = useState<Record<number, boolean>>({});
 
-  const getPrimaryQuestionsByPhaseId = (id: number): PrimaryQuestion[] | undefined => {
-    const [phase] = survey.phases.filter((phase: Phase) => phase.id == id);
-    if (phase) return phase.primary_questions;
-    else return undefined;
-  };
+  const getPrimaryQuestionsByPhaseId = useCallback(
+    (id: number): PrimaryQuestion[] | undefined => {
+      const phase = survey.phases.find((phase: Phase) => phase.id === id);
+      return phase?.primary_questions;
+    },
+    [survey.phases]
+  );
 
-  const questions = getPrimaryQuestionsByPhaseId(1) || [];
+  // Memoize questions to prevent unnecessary re-renders
+  const questions = useMemo(() => {
+    return getPrimaryQuestionsByPhaseId(1) || [];
+  }, [getPrimaryQuestionsByPhaseId]);
+
   const currentQuestion = questions[currentQuestionIndex];
+  const showQuestions = questions.length > 0;
 
-  // Initialize validation status when questions load
-  useEffect(() => {
-    if (questions.length > 0) {
-      const initialValidation: Record<number, boolean> = {};
-      questions.forEach((q) => {
-        initialValidation[q.id] = false;
-      });
-      setValidationStatus(initialValidation);
-      setShowQuestions(true);
-    }
+  // Derive initial validation status from questions - computed during render
+  const derivedInitialValidation = useMemo(() => {
+    const initialValidation: Record<number, boolean> = {};
+    questions.forEach((q) => {
+      initialValidation[q.id] = false;
+    });
+    return initialValidation;
   }, [questions]);
 
-  // Single handler for all input changes
-  const handleInputChange = (
-    questionId: number,
-    value: string | string[] | number,
-    isValid: boolean
-  ) => {
-    console.log("Question Input:", {
-      questionId: questionId,
-      question: questions.find((q) => q.id === questionId)?.question,
-      value: value,
-      type: typeof value,
-      isValid: isValid,
-      timestamp: new Date().toISOString(),
+  // Derive initial touched status from questions - computed during render
+  const derivedInitialTouched = useMemo(() => {
+    const initialTouched: Record<number, boolean> = {};
+    questions.forEach((q) => {
+      initialTouched[q.id] = false;
     });
+    return initialTouched;
+  }, [questions]);
 
-    // Store the answer
-    setUserAnswers((prev) => ({
-      ...prev,
-      [questionId]: value as string | string[],
-    }));
+  // Merge current validation status with derived initial state
+  const mergedValidationStatus = useMemo(() => {
+    if (Object.keys(validationStatus).length === 0) {
+      return derivedInitialValidation;
+    }
 
-    // Update validation status
-    setValidationStatus((prev) => ({
-      ...prev,
-      [questionId]: isValid,
-    }));
-  };
+    // Ensure all current questions have a validation status
+    const merged: Record<number, boolean> = { ...validationStatus };
+    questions.forEach((q) => {
+      if (!(q.id in merged)) {
+        merged[q.id] = false;
+      }
+    });
+    return merged;
+  }, [validationStatus, derivedInitialValidation, questions]);
+
+  // Merge current touched status with derived initial state
+  const mergedTouchedQuestions = useMemo(() => {
+    if (Object.keys(touchedQuestions).length === 0) {
+      return derivedInitialTouched;
+    }
+
+    // Ensure all current questions have a touched status
+    const merged: Record<number, boolean> = { ...touchedQuestions };
+    questions.forEach((q) => {
+      if (!(q.id in merged)) {
+        merged[q.id] = false;
+      }
+    });
+    return merged;
+  }, [touchedQuestions, derivedInitialTouched, questions]);
+
+  // Single handler for all input changes
+  const handleInputChange = useCallback(
+    (questionId: number, value: string | string[] | number, isValid: boolean) => {
+      // Store the answer
+      setUserAnswers((prev) => ({
+        ...prev,
+        [questionId]: value as string | string[],
+      }));
+
+      // Update validation status
+      setValidationStatus((prev) => ({
+        ...prev,
+        [questionId]: isValid,
+      }));
+
+      // Mark question as touched
+      setTouchedQuestions((prev) => ({
+        ...prev,
+        [questionId]: true,
+      }));
+    },
+    []
+  );
 
   // Handle next button click
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     if (currentQuestionIndex < questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
     } else {
-      // All questions completed
-      console.log("All questions completed:", userAnswers);
-      alert("All questions completed! Check console for answers.");
+      alert("All questions completed!");
     }
-  };
+  }, [currentQuestionIndex, questions.length]);
 
   // Handle previous button click
-  const handlePrevious = () => {
+  const handlePrevious = useCallback(() => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex((prev) => prev - 1);
     }
-  };
+  }, [currentQuestionIndex]);
 
   // Reset all answers
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     setUserAnswers({});
     setValidationStatus({});
+    setTouchedQuestions({});
     setCurrentQuestionIndex(0);
-    console.log("Survey reset");
-  };
+  }, []);
 
   // Check if current question is answered and valid
-  const isCurrentQuestionValid = () => {
+  const isCurrentQuestionValid = useCallback(() => {
     if (!currentQuestion) return false;
-    return validationStatus[currentQuestion.id] === true;
-  };
+    return mergedValidationStatus[currentQuestion.id] === true;
+  }, [currentQuestion, mergedValidationStatus]);
 
-  // Convert survey options to FormInput options
-  const convertToFormInputOptions = (options: any[]): Option[] => {
+  // Convert survey options to FormInput options with proper type handling
+  const convertToFormInputOptions = useCallback((options: QuestionOption[]): Option[] => {
     return options.map((option) => ({
-      value: option.value,
-      label: option.value,
-      // You could add followup info to label if needed
-      // label: `${option.value} (${option.followup_questions.length} followups)`
+      value: String(option.value), // Convert to string since FormInput expects string values
+      label: String(option.value), // Convert to string for label
     }));
-  };
+  }, []);
 
   // Get validation rules based on question type
-  const getValidationRules = (question: PrimaryQuestion): ValidationRule[] => {
-    const rules: ValidationRule[] = [];
-
-    // All questions are required in this survey
-    rules.push({ type: "required", message: "This question is required" });
+  const getValidationRules = useCallback((question: PrimaryQuestion): ValidationRule[] => {
+    const rules: ValidationRule[] = [{ type: "required", message: "This question is required" }];
 
     // Add type-specific validations
     if (question.type === "text" || question.type === "textarea") {
@@ -115,307 +164,333 @@ const Test = () => {
     }
 
     return rules;
-  };
+  }, []);
 
   // Get current progress percentage
-  const getProgressPercentage = () => {
-    const answeredQuestions = Object.keys(validationStatus).filter(
-      (key) => validationStatus[parseInt(key)] === true
+  const getProgressPercentage = useCallback(() => {
+    const answeredQuestions = Object.keys(mergedValidationStatus).filter(
+      (key) => mergedValidationStatus[parseInt(key)] === true
     ).length;
     return Math.round((answeredQuestions / questions.length) * 100);
-  };
+  }, [mergedValidationStatus, questions.length]);
+
+  // Get statistics
+  const answeredCount = Object.keys(userAnswers).length;
+  const remainingCount = questions.length - answeredCount;
+  const progressPercentage = getProgressPercentage();
 
   if (!showQuestions || questions.length === 0) {
     return (
-      <div className="container mt-5 text-center">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading questions...</span>
-        </div>
-        <p className="mt-3">Loading survey questions...</p>
-      </div>
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
+        <Stack spacing={2} alignItems="center">
+          <CircularProgress size={60} />
+          <Typography variant="h6" color="text.secondary">
+            Loading survey questions...
+          </Typography>
+        </Stack>
+      </Box>
     );
   }
 
+  // Safely convert question type to FormInput type
+  const getFormInputType = (questionType: string): InputType => {
+    // Map survey question types to FormInput types
+    const typeMap: Record<string, InputType> = {
+      radio: "radio",
+      checkbox: "checkbox",
+      dropdown: "dropdown",
+      text: "text",
+      textarea: "textarea",
+      email: "email",
+      password: "password",
+      range: "range",
+    };
+
+    return typeMap[questionType] || "text";
+  };
+
+  // Determine if we should show error for current question
+  const showError =
+    currentQuestion &&
+    mergedTouchedQuestions[currentQuestion.id] &&
+    !mergedValidationStatus[currentQuestion.id];
+
   return (
-    <div className="container mt-5">
-      {/* Progress Bar */}
-      <div className="card mb-4 shadow-sm">
-        <div className="card-body">
-          <div className="d-flex justify-content-between align-items-center mb-3">
-            <div>
-              <h4 className="card-title mb-1">Startup Survey</h4>
-              <p className="text-muted mb-0">
-                Answer these questions to help us understand your startup
-              </p>
-            </div>
-            <span className="badge bg-primary rounded-pill">
-              Question {currentQuestionIndex + 1} of {questions.length}
-            </span>
-          </div>
-
-          <div className="progress" style={{ height: "10px" }}>
-            <div
-              className="progress-bar bg-success"
-              role="progressbar"
-              style={{ width: `${getProgressPercentage()}%` }}
-              aria-valuenow={getProgressPercentage()}
-              aria-valuemin={0}
-              aria-valuemax={100}
-            ></div>
-          </div>
-          <div className="d-flex justify-content-between mt-2">
-            <small className="text-muted">
-              {Object.keys(userAnswers).length} of {questions.length} answered
-            </small>
-            <small className="text-primary">{getProgressPercentage()}% Complete</small>
-          </div>
-        </div>
-      </div>
-
-      {/* Current Question */}
-      <div className="row justify-content-center">
-        <div className="col-lg-8">
-          <div className="card shadow">
-            <div className="card-header bg-primary text-white">
-              <div className="d-flex justify-content-between align-items-center">
-                <h5 className="mb-0">Question {currentQuestionIndex + 1}</h5>
-                <span className="badge bg-light text-primary">
-                  {currentQuestion.type.toUpperCase()}
-                </span>
-              </div>
-            </div>
-
-            <div className="card-body">
-              <div className="mb-4">
-                <h4 className="mb-4">{currentQuestion.question}</h4>
-
-                {/* Display only current question */}
-                <FormInput
-                  type={currentQuestion.type as "radio" | "checkbox" | "dropdown" | "text"}
-                  name={`question-${currentQuestion.id}`}
-                  label="Your Answer"
-                  options={convertToFormInputOptions(currentQuestion.options)}
-                  value={userAnswers[currentQuestion.id] || ""}
-                  required={true}
-                  validation={getValidationRules(currentQuestion)}
-                  onChange={(name, value, isValid) =>
-                    handleInputChange(currentQuestion.id, value, isValid)
-                  }
-                  helpText="Select your answer to proceed to the next question"
-                  className="mt-3"
-                  containerClassName="mb-4"
-                  inline={currentQuestion.type === "radio" || currentQuestion.type === "checkbox"}
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Box>
+        {/* Progress Card */}
+        <Card sx={{ mb: 4, borderRadius: 2, boxShadow: 3 }}>
+          <CardContent>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "column", md: "row" },
+                alignItems: { xs: "flex-start", md: "center" },
+                justifyContent: "space-between",
+                mb: 2,
+              }}
+            >
+              <Box sx={{ mb: { xs: 2, md: 0 } }}>
+                <Typography variant="h5" gutterBottom fontWeight="bold">
+                  Startup Survey
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                  Answer these questions to help us understand your startup
+                </Typography>
+              </Box>
+              <Box sx={{ display: "flex", justifyContent: { xs: "flex-start", md: "flex-end" } }}>
+                <Chip
+                  label={`Question ${currentQuestionIndex + 1} of ${questions.length}`}
+                  color="primary"
+                  sx={{ fontSize: "0.9rem", px: 1 }}
                 />
+              </Box>
+            </Box>
 
-                {/* Followup info (for debugging/understanding) */}
-                <div className="mt-4 p-3 bg-light rounded">
-                  <small className="text-muted">
-                    <strong>Question ID:</strong> {currentQuestion.id} |<strong> Type:</strong>{" "}
-                    {currentQuestion.type} |<strong> Options:</strong>{" "}
-                    {currentQuestion.options.length}
-                  </small>
-                  <br />
-                  <small className="text-muted">
-                    Each option triggers different follow-up questions based on your selection.
-                  </small>
-                </div>
-              </div>
+            <Box sx={{ mt: 3 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}>
+                <Typography variant="body2" color="text.secondary">
+                  {answeredCount} of {questions.length} answered
+                </Typography>
+                <Typography variant="body2" color="primary" fontWeight="medium">
+                  {progressPercentage}% Complete
+                </Typography>
+              </Box>
+              <LinearProgress
+                variant="determinate"
+                value={progressPercentage}
+                sx={{
+                  height: 10,
+                  borderRadius: 5,
+                  "& .MuiLinearProgress-bar": {
+                    borderRadius: 5,
+                  },
+                }}
+              />
+            </Box>
+          </CardContent>
+        </Card>
 
-              {/* Navigation Buttons */}
-              <div className="mt-4 pt-4 border-top">
-                <div className="d-flex justify-content-between">
-                  <button
-                    type="button"
-                    className="btn btn-outline-secondary"
-                    onClick={handlePrevious}
-                    disabled={currentQuestionIndex === 0}
+        <Box sx={{ display: "flex", flexDirection: { xs: "column", lg: "row" }, gap: 3 }}>
+          {/* Main Question Card */}
+          <Box sx={{ flex: 2 }}>
+            <Card sx={{ borderRadius: 2, boxShadow: 3, height: "100%" }}>
+              <CardHeader
+                title={
+                  <Box
+                    sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}
                   >
-                    <i className="bi bi-arrow-left me-2"></i>
-                    Previous
-                  </button>
+                    <Typography variant="h6">Question {currentQuestionIndex + 1}</Typography>
+                    <Chip
+                      label={currentQuestion.type.toUpperCase()}
+                      size="small"
+                      sx={{ backgroundColor: "primary.light", color: "primary.contrastText" }}
+                    />
+                  </Box>
+                }
+                sx={{ backgroundColor: "primary.main", color: "white" }}
+              />
+              <CardContent>
+                <Typography variant="h5" gutterBottom sx={{ mb: 4, fontWeight: "medium" }}>
+                  {currentQuestion.question}
+                </Typography>
 
-                  <div>
-                    <button
-                      type="button"
-                      className="btn btn-outline-danger me-2"
-                      onClick={handleReset}
+                <Box sx={{ mb: 4 }}>
+                  <FormInput
+                    type={getFormInputType(currentQuestion.type)}
+                    name={`question-${currentQuestion.id}`}
+                    label="Your Answer"
+                    options={convertToFormInputOptions(currentQuestion.options)}
+                    value={userAnswers[currentQuestion.id] || ""}
+                    required={true}
+                    validation={getValidationRules(currentQuestion)}
+                    onChange={(_name, value, isValid) =>
+                      handleInputChange(currentQuestion.id, value, isValid)
+                    }
+                    helpText="Select your answer to proceed to the next question"
+                    inline={currentQuestion.type === "radio" || currentQuestion.type === "checkbox"}
+                  />
+                </Box>
+
+                {/* Navigation Buttons */}
+                <Box sx={{ pt: 3, borderTop: 1, borderColor: "divider" }}>
+                  <Stack direction="row" justifyContent="space-between" alignItems="center">
+                    <Button
+                      variant="outlined"
+                      onClick={handlePrevious}
+                      disabled={currentQuestionIndex === 0}
+                      sx={{ minWidth: 120 }}
                     >
-                      <i className="bi bi-arrow-clockwise me-2"></i>
-                      Reset All
-                    </button>
+                      Previous
+                    </Button>
 
-                    <button
-                      type="button"
-                      className="btn btn-primary"
-                      onClick={handleNext}
-                      disabled={!isCurrentQuestionValid()}
+                    <Stack direction="row" spacing={2}>
+                      <Button
+                        variant="outlined"
+                        color="error"
+                        onClick={handleReset}
+                        sx={{ minWidth: 120 }}
+                      >
+                        Reset All
+                      </Button>
+
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleNext}
+                        disabled={!isCurrentQuestionValid()}
+                        sx={{ minWidth: 150 }}
+                      >
+                        {currentQuestionIndex < questions.length - 1
+                          ? "Next Question"
+                          : "Complete Survey"}
+                      </Button>
+                    </Stack>
+                  </Stack>
+
+                  {showError && (
+                    <Alert severity="warning" sx={{ mt: 3 }}>
+                      Please answer this question before proceeding to the next one.
+                    </Alert>
+                  )}
+                </Box>
+              </CardContent>
+            </Card>
+          </Box>
+
+          {/* Stats Sidebar */}
+          <Box sx={{ flex: 1, minWidth: { xs: "100%", lg: 300 } }}>
+            <Stack spacing={3}>
+              {/* Completion Stats */}
+              <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom fontWeight="medium">
+                    Survey Progress
+                  </Typography>
+                  <Stack spacing={2}>
+                    <Paper
+                      elevation={0}
+                      sx={{
+                        p: 2,
+                        backgroundColor: "primary.main",
+                        color: "white",
+                        borderRadius: 2,
+                      }}
                     >
-                      {currentQuestionIndex < questions.length - 1 ? (
-                        <>
-                          Next Question <i className="bi bi-arrow-right ms-2"></i>
-                        </>
-                      ) : (
-                        <>
-                          Complete Survey <i className="bi bi-check-circle ms-2"></i>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
+                      <Typography variant="h4" align="center" fontWeight="bold">
+                        {progressPercentage}%
+                      </Typography>
+                      <Typography variant="body2" align="center">
+                        Completion
+                      </Typography>
+                    </Paper>
 
-                {!isCurrentQuestionValid() && (
-                  <div className="alert alert-warning mt-3 mb-0">
-                    <i className="bi bi-exclamation-triangle me-2"></i>
-                    Please answer this question before proceeding to the next one.
-                  </div>
-                )}
-              </div>
-            </div>
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <Paper
+                        elevation={0}
+                        sx={{
+                          p: 2,
+                          flex: 1,
+                          backgroundColor: "success.light",
+                          color: "success.contrastText",
+                          borderRadius: 2,
+                          textAlign: "center",
+                        }}
+                      >
+                        <Typography variant="h5" fontWeight="bold">
+                          {answeredCount}
+                        </Typography>
+                        <Typography variant="body2">Questions Answered</Typography>
+                      </Paper>
+                      <Paper
+                        elevation={0}
+                        sx={{
+                          p: 2,
+                          flex: 1,
+                          backgroundColor: "info.light",
+                          color: "info.contrastText",
+                          borderRadius: 2,
+                          textAlign: "center",
+                        }}
+                      >
+                        <Typography variant="h5" fontWeight="bold">
+                          {remainingCount}
+                        </Typography>
+                        <Typography variant="body2">Questions Remaining</Typography>
+                      </Paper>
+                    </Box>
+                  </Stack>
+                </CardContent>
+              </Card>
 
-            {/* Debug Panel - Shows all answers so far */}
-            <div className="card-footer bg-light">
-              <div className="accordion" id="debugAccordion">
-                <div className="accordion-item">
-                  <h2 className="accordion-header">
-                    <button
-                      className="accordion-button collapsed"
-                      type="button"
-                      data-bs-toggle="collapse"
-                      data-bs-target="#debugCollapse"
-                    >
-                      <i className="bi bi-code-slash me-2"></i>
-                      Debug Information (Click to expand)
-                    </button>
-                  </h2>
-                  <div id="debugCollapse" className="accordion-collapse collapse">
-                    <div className="accordion-body">
-                      <div className="row">
-                        <div className="col-md-6">
-                          <h6>Current Answers</h6>
-                          <div
-                            className="bg-dark text-light p-3 rounded"
-                            style={{ fontSize: "0.8rem" }}
+              {/* Question Navigation */}
+              <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom fontWeight="medium">
+                    Question Navigation
+                  </Typography>
+                  <Box sx={{ maxHeight: 300, overflow: "auto", pr: 1 }}>
+                    <Stack spacing={1}>
+                      {questions.map((q, index) => (
+                        <Button
+                          key={q.id}
+                          variant={index === currentQuestionIndex ? "contained" : "outlined"}
+                          color={index === currentQuestionIndex ? "primary" : "inherit"}
+                          size="small"
+                          fullWidth
+                          onClick={() => setCurrentQuestionIndex(index)}
+                          sx={{
+                            justifyContent: "flex-start",
+                            textTransform: "none",
+                            py: 1,
+                          }}
+                        >
+                          <Typography
+                            variant="body2"
+                            sx={{
+                              textOverflow: "ellipsis",
+                              overflow: "hidden",
+                              whiteSpace: "nowrap",
+                            }}
                           >
-                            <pre className="mb-0">{JSON.stringify(userAnswers, null, 2)}</pre>
-                          </div>
-                        </div>
-                        <div className="col-md-6">
-                          <h6>Validation Status</h6>
-                          <div className="p-3 bg-white border rounded">
-                            <ul className="list-unstyled mb-0">
-                              {Object.entries(validationStatus).map(([questionId, isValid]) => (
-                                <li key={questionId} className="mb-2 d-flex align-items-center">
-                                  <span
-                                    className={`badge ${isValid ? "bg-success" : "bg-danger"} me-2`}
-                                  >
-                                    {isValid ? "✓" : "✗"}
-                                  </span>
-                                  <span className="text-muted">
-                                    Q{questionId}:{" "}
-                                    {questions.find((q) => q.id === parseInt(questionId))?.question}
-                                  </span>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
+                            Q{index + 1}:{" "}
+                            {q.question.length > 30
+                              ? `${q.question.substring(0, 30)}...`
+                              : q.question}
+                          </Typography>
+                        </Button>
+                      ))}
+                    </Stack>
+                  </Box>
+                </CardContent>
+              </Card>
 
-                      <div className="mt-3 pt-3 border-top">
-                        <h6>Question Details</h6>
-                        <div className="table-responsive">
-                          <table className="table table-sm">
-                            <thead>
-                              <tr>
-                                <th>ID</th>
-                                <th>Question</th>
-                                <th>Type</th>
-                                <th>Options</th>
-                                <th>Answer</th>
-                                <th>Status</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {questions.map((q, index) => (
-                                <tr
-                                  key={q.id}
-                                  className={index === currentQuestionIndex ? "table-primary" : ""}
-                                >
-                                  <td>{q.id}</td>
-                                  <td>
-                                    {q.question.length > 50
-                                      ? q.question.substring(0, 50) + "..."
-                                      : q.question}
-                                  </td>
-                                  <td>
-                                    <span className="badge bg-secondary">{q.type}</span>
-                                  </td>
-                                  <td>{q.options.length}</td>
-                                  <td>
-                                    {userAnswers[q.id] ? (
-                                      <span className="text-success">
-                                        {Array.isArray(userAnswers[q.id])
-                                          ? `[${(userAnswers[q.id] as string[]).join(", ")}]`
-                                          : userAnswers[q.id]}
-                                      </span>
-                                    ) : (
-                                      <span className="text-muted">Not answered</span>
-                                    )}
-                                  </td>
-                                  <td>
-                                    <span
-                                      className={`badge ${
-                                        validationStatus[q.id] ? "bg-success" : "bg-warning"
-                                      }`}
-                                    >
-                                      {validationStatus[q.id] ? "Answered" : "Pending"}
-                                    </span>
-                                  </td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Quick Stats */}
-      <div className="row mt-4">
-        <div className="col-md-4">
-          <div className="card text-center">
-            <div className="card-body">
-              <h5 className="card-title text-primary">{Object.keys(userAnswers).length}</h5>
-              <p className="card-text text-muted">Questions Answered</p>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="card text-center">
-            <div className="card-body">
-              <h5 className="card-title text-success">{getProgressPercentage()}%</h5>
-              <p className="card-text text-muted">Completion</p>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-4">
-          <div className="card text-center">
-            <div className="card-body">
-              <h5 className="card-title text-info">
-                {questions.length - Object.keys(userAnswers).length}
-              </h5>
-              <p className="card-text text-muted">Questions Remaining</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              {/* Quick Tips */}
+              <Card sx={{ borderRadius: 2, boxShadow: 2 }}>
+                <CardContent>
+                  <Typography variant="h6" gutterBottom fontWeight="medium">
+                    Tips
+                  </Typography>
+                  <Stack spacing={1}>
+                    <Alert severity="info" icon={false} sx={{ py: 0.5 }}>
+                      <Typography variant="body2">
+                        Answer all questions to complete the survey
+                      </Typography>
+                    </Alert>
+                    <Alert severity="info" icon={false} sx={{ py: 0.5 }}>
+                      <Typography variant="body2">Use Previous/Next buttons to navigate</Typography>
+                    </Alert>
+                    <Alert severity="info" icon={false} sx={{ py: 0.5 }}>
+                      <Typography variant="body2">Reset All will clear all your answers</Typography>
+                    </Alert>
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Stack>
+          </Box>
+        </Box>
+      </Box>
+    </Container>
   );
 };
 
