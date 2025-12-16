@@ -4,6 +4,7 @@ import Home from "../../pages/Home/Home";
 import MainFrame from "../../containers/Layout/MainFrame/MainFrame";
 import Counter from "../../pages/Counter/Counter";
 import Test from "../../pages/Test/Test";
+import Subscription from "../../pages/subscription/Subscription";
 
 const MainNav = () => {
   return (
@@ -13,6 +14,7 @@ const MainNav = () => {
           <Route index element={<Home />} />
           <Route path="/counter" element={<Counter />} />
           <Route path="/survey" element={<Test />} />
+          <Route path="/subscription" element={<Subscription />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
