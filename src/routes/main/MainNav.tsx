@@ -12,7 +12,7 @@ const MainNav = () => {
         <Route path="/" element={<MainFrame />}>
           <Route index element={<Home />} />
           <Route path="/counter" element={<Counter />} />
-          <Route path="/test" element={<Test />} />
+          <Route path="/survey" element={<Test />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

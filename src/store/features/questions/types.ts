@@ -1,43 +1,68 @@
+// Updated types.ts
+export type ConditionOperator =
+  | "includes"
+  | "equals"
+  | "not-equals"
+  | "greater-than"
+  | "less-than"
+  | "between";
+
+export interface Condition {
+  questionId: number;
+  operator: ConditionOperator;
+  value: string | number | string[] | { min: number; max: number };
+}
+
+export interface QuestionOption {
+  value: string;
+  label: string;
+}
+
+export type QuestionType = "radio" | "checkbox" | "dropdown" | "textarea" | "text" | "range";
+
+export interface RangeConfig {
+  min: number;
+  max: number;
+  step?: number;
+  unit?: string;
+}
+
+export interface Question {
+  id: number;
+  question: string;
+  type: QuestionType;
+  options: QuestionOption[];
+  conditions: Condition[];
+  rangeConfig?: RangeConfig;
+}
+
 export interface Phase {
   id: number;
   name: string;
-  primary_questions: PrimaryQuestion[];
-}
-
-export interface PrimaryQuestion {
-  id: number;
-  question: string;
-  type: QuestionType;
-  options: QuestionOption[];
-}
-
-export type QuestionType = "radio" | "checkbox" | "dropdown" | "textarea" | "text";
-
-export interface QuestionOption {
-  value: string | number;
-  followup_questions?: number[];
-  exclude_followups?: number[];
-}
-
-export interface FollowupQuestion {
-  id: number;
-  section: string;
-  question: string;
-  type: QuestionType;
-  options: QuestionOption[];
+  questions: Question[];
 }
 
 export interface SurveyData {
   phases: Phase[];
-  followup_questions: FollowupQuestion[];
 }
 
-export interface SelectedOption {
+export interface UserAnswer {
   questionId: number;
-  selectedValues: string[];
+  value: string | string[] | number;
+  phaseId: number;
+  timestamp: string;
 }
 
-export interface PhaseFollowups {
+export interface SurveyState {
+  currentPhase: number;
+  currentQuestionIndex: number;
+  userAnswers: UserAnswer[];
+  phaseCompletion: Record<number, boolean>;
+  showResults: boolean;
+}
+
+export interface PhaseCompletion {
   phaseId: number;
-  followupQuestions: FollowupQuestion[];
+  completed: boolean;
+  completionPercentage: number;
 }
